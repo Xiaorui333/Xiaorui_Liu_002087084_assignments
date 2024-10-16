@@ -23,29 +23,30 @@ public class PersonDirectory {
     
     public Person searchPerson(String criteria){
         for(Person person : personList){
-            if(person.getFirstName().equalsIgnoreCase(criteria))||
+            if(person.getFirstName().equalsIgnoreCase(criteria)||
                 person.getLastName().equalsIgnoreCase(criteria)||
                 person.getHomeAddress().getStreetAddress().equalsIgnoreCase(criteria)||
                 person.getWorkAddress().getStreetAddress().equalsIgnoreCase(criteria)){
-            return Person;
+            return person;
             }   
         }
     return null;  
     }  
     
-    public boolean updatePerson(String ssn,Person update){
-        for(int i=0,i<personList.size(),i++){
-            if (personList.get(i).getSocialSecurityNumber().equals(ssn)) {
-                personList.set(i, update);
-                return true; // Successfully updated
-            }
+    public boolean updatePerson(String ssn, Person updatedPerson) {
+    for (int i = 0; i < personList.size(); i++) {
+        if (personList.get(i).getSocialSecurityNumber().equals(ssn)) {
+            personList.set(i, updatedPerson);
+            return true; 
         }
-        return false; // Person not found
     }
+    return false;
+}
+
     
     public boolean deletePerson(String ssn,Person delete){
-        for(int i=0,i<personList.size(),i++){
-            if(personList.get(i)).getSocialSecurityNumber().equals(ssn)) {
+        for(int i=0; i < personList.size(); i++){
+            if (personList.get(i).getSocialSecurityNumber().equals(ssn)) {
                personList.set(i, delete);
                return true;
             }
