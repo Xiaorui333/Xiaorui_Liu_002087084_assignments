@@ -8,6 +8,7 @@
  * @author frida
  */
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class PersonDirectory {
@@ -44,11 +45,16 @@ public class PersonDirectory {
 }
 
     
-    public boolean deletePerson(String ssn,Person delete){
-        for(int i=0; i < personList.size(); i++){
-            if (personList.get(i).getSocialSecurityNumber().equals(ssn)) {
-               personList.set(i, delete);
-               return true;
+    public boolean deletePerson(String criteria){
+        Iterator<Person> iterator = personList.iterator();
+        while (iterator.hasNext()){
+            Person person = iterator.next();
+            if(person.getFirstName().equalsIgnoreCase(criteria)||
+                person.getLastName().equalsIgnoreCase(criteria)||
+                person.getHomeAddress().getStreetAddress().equalsIgnoreCase(criteria)||
+                person.getWorkAddress().getStreetAddress().equalsIgnoreCase(criteria)){
+                iterator.remove();
+                return true;
             }
         }
         return false;

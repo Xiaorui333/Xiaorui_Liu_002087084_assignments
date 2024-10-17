@@ -21,6 +21,8 @@ public class MainJFrame extends javax.swing.JFrame {
     
 
 private PersonDirectory personDirectory = new PersonDirectory();
+
+
     
 
     /**
@@ -75,12 +77,13 @@ private PersonDirectory personDirectory = new PersonDirectory();
         listbtn = new javax.swing.JButton();
         searchPersonbtn = new javax.swing.JButton();
         titlelbl = new javax.swing.JLabel();
-        deletebtn = new javax.swing.JButton();
+        deletePersonbtn = new javax.swing.JButton();
         WorkArea = new javax.swing.JPanel();
         searchPanel = new javax.swing.JPanel();
         titleLabel1 = new javax.swing.JLabel();
         searchTxt = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
+        searPromLabel = new javax.swing.JLabel();
         listPanel = new javax.swing.JPanel();
         addPanel = new javax.swing.JPanel();
         firNaTextField = new javax.swing.JTextField();
@@ -121,6 +124,10 @@ private PersonDirectory personDirectory = new PersonDirectory();
         createButton = new javax.swing.JButton();
         updatebtn = new javax.swing.JButton();
         deletePanel = new javax.swing.JPanel();
+        titleLabel2 = new javax.swing.JLabel();
+        delPromLabel = new javax.swing.JLabel();
+        delTxt = new javax.swing.JTextField();
+        deleteButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -152,10 +159,10 @@ private PersonDirectory personDirectory = new PersonDirectory();
         titlelbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         titlelbl.setText("Person Profile");
 
-        deletebtn.setText("Delete");
-        deletebtn.addActionListener(new java.awt.event.ActionListener() {
+        deletePersonbtn.setText("Delete");
+        deletePersonbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deletebtnActionPerformed(evt);
+                deletePersonbtnActionPerformed(evt);
             }
         });
 
@@ -170,7 +177,7 @@ private PersonDirectory personDirectory = new PersonDirectory();
                     .addComponent(addbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(listbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(searchPersonbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(deletebtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(deletePersonbtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ContralPanelLayout.setVerticalGroup(
@@ -184,9 +191,9 @@ private PersonDirectory personDirectory = new PersonDirectory();
                 .addComponent(listbtn)
                 .addGap(26, 26, 26)
                 .addComponent(searchPersonbtn)
-                .addGap(18, 18, 18)
-                .addComponent(deletebtn)
-                .addContainerGap(136, Short.MAX_VALUE))
+                .addGap(26, 26, 26)
+                .addComponent(deletePersonbtn)
+                .addContainerGap(128, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(ContralPanel);
@@ -208,6 +215,8 @@ private PersonDirectory personDirectory = new PersonDirectory();
             }
         });
 
+        searPromLabel.setText("please enter person name or street address:");
+
         javax.swing.GroupLayout searchPanelLayout = new javax.swing.GroupLayout(searchPanel);
         searchPanel.setLayout(searchPanelLayout);
         searchPanelLayout.setHorizontalGroup(
@@ -217,17 +226,24 @@ private PersonDirectory personDirectory = new PersonDirectory();
                 .addGap(0, 27, Short.MAX_VALUE))
             .addGroup(searchPanelLayout.createSequentialGroup()
                 .addGap(49, 49, 49)
-                .addComponent(searchTxt)
-                .addGap(18, 18, 18)
-                .addComponent(searchButton)
-                .addGap(77, 77, 77))
+                .addGroup(searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(searchPanelLayout.createSequentialGroup()
+                        .addComponent(searPromLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(searchPanelLayout.createSequentialGroup()
+                        .addComponent(searchTxt)
+                        .addGap(18, 18, 18)
+                        .addComponent(searchButton)
+                        .addGap(77, 77, 77))))
         );
         searchPanelLayout.setVerticalGroup(
             searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchPanelLayout.createSequentialGroup()
                 .addGap(42, 42, 42)
                 .addComponent(titleLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(136, 136, 136)
+                .addGap(95, 95, 95)
+                .addComponent(searPromLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -381,6 +397,7 @@ private PersonDirectory personDirectory = new PersonDirectory();
 
         cityLabel1.setText("City");
 
+        createButton.setBackground(new java.awt.Color(153, 255, 102));
         createButton.setText("Create");
         createButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -388,6 +405,7 @@ private PersonDirectory personDirectory = new PersonDirectory();
             }
         });
 
+        updatebtn.setBackground(new java.awt.Color(255, 255, 204));
         updatebtn.setText("Update");
         updatebtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -457,10 +475,10 @@ private PersonDirectory personDirectory = new PersonDirectory();
                                 .addGap(34, 34, 34)
                                 .addComponent(workZipTxt))))
                     .addGroup(addPanelLayout.createSequentialGroup()
-                        .addGap(205, 205, 205)
-                        .addGroup(addPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(createButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(updatebtn, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE))))
+                        .addGap(141, 141, 141)
+                        .addComponent(createButton, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(updatebtn, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(addPanelLayout.createSequentialGroup()
                 .addGap(6, 6, 6)
@@ -514,24 +532,61 @@ private PersonDirectory personDirectory = new PersonDirectory();
                                 .addGroup(addPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(phoLabel1)
                                     .addComponent(workPhoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addGap(18, 18, 18)
-                .addComponent(createButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(updatebtn)
+                .addGap(47, 47, 47)
+                .addGroup(addPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(updatebtn)
+                    .addComponent(createButton))
                 .addContainerGap(33, Short.MAX_VALUE))
         );
 
         WorkArea.add(addPanel, "card2");
 
+        titleLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        titleLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        titleLabel2.setText("Delete Person");
+
+        delPromLabel.setText("please enter person name or street address:");
+
+        delTxt.setHorizontalAlignment(javax.swing.JTextField.LEFT);
+
+        deleteButton.setText("Delete");
+        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout deletePanelLayout = new javax.swing.GroupLayout(deletePanel);
         deletePanel.setLayout(deletePanelLayout);
         deletePanelLayout.setHorizontalGroup(
             deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 643, Short.MAX_VALUE)
+            .addGroup(deletePanelLayout.createSequentialGroup()
+                .addComponent(titleLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 616, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 27, Short.MAX_VALUE))
+            .addGroup(deletePanelLayout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addGroup(deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(deletePanelLayout.createSequentialGroup()
+                        .addComponent(delPromLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(deletePanelLayout.createSequentialGroup()
+                        .addComponent(delTxt)
+                        .addGap(18, 18, 18)
+                        .addComponent(deleteButton)
+                        .addGap(77, 77, 77))))
         );
         deletePanelLayout.setVerticalGroup(
             deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 458, Short.MAX_VALUE)
+            .addGroup(deletePanelLayout.createSequentialGroup()
+                .addGap(42, 42, 42)
+                .addComponent(titleLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(95, 95, 95)
+                .addComponent(delPromLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(delTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(207, Short.MAX_VALUE))
         );
 
         WorkArea.add(deletePanel, "card5");
@@ -624,15 +679,6 @@ private PersonDirectory personDirectory = new PersonDirectory();
         cardLayout.show(WorkArea, "searchPanel"); 
         
     }//GEN-LAST:event_searchPersonbtnActionPerformed
-
-    private void deletebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebtnActionPerformed
-        // TODO add your handling code here:
-        CardLayout cardLayout = (CardLayout) WorkArea.getLayout();
-        cardLayout.show(WorkArea, "deletePanel"); 
-        
-        
-        
-    }//GEN-LAST:event_deletebtnActionPerformed
 
     private void updatebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updatebtnActionPerformed
         // TODO add your handling code here:
@@ -783,6 +829,25 @@ private PersonDirectory personDirectory = new PersonDirectory();
         // TODO add your handling code here:
     }//GEN-LAST:event_homeStrtxtActionPerformed
 
+    private void deletePersonbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePersonbtnActionPerformed
+        // TODO add your handling code here:
+        CardLayout cardLayout = (CardLayout) WorkArea.getLayout();
+        cardLayout.show(WorkArea, "deletePanel"); 
+    }//GEN-LAST:event_deletePersonbtnActionPerformed
+
+    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+    
+        // TODO add your handling code here:
+        String criteria = delTxt.getText();
+        boolean isDeleted = personDirectory.deletePerson(criteria);
+
+        if (isDeleted) {
+            JOptionPane.showMessageDialog(this, "Person deleted successfully.");
+        } else {
+            JOptionPane.showMessageDialog(this, "No person found.");
+        }
+    }//GEN-LAST:event_deleteButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -828,8 +893,11 @@ private PersonDirectory personDirectory = new PersonDirectory();
     private javax.swing.JLabel cityLabel;
     private javax.swing.JLabel cityLabel1;
     private javax.swing.JButton createButton;
+    private javax.swing.JLabel delPromLabel;
+    private javax.swing.JTextField delTxt;
+    private javax.swing.JButton deleteButton;
     private javax.swing.JPanel deletePanel;
-    private javax.swing.JButton deletebtn;
+    private javax.swing.JButton deletePersonbtn;
     private javax.swing.JTextField firNaTextField;
     private javax.swing.JLabel firNalbl;
     private javax.swing.JPanel homeAddPanel;
@@ -847,6 +915,7 @@ private PersonDirectory personDirectory = new PersonDirectory();
     private javax.swing.JButton listbtn;
     private javax.swing.JLabel phoLabel;
     private javax.swing.JLabel phoLabel1;
+    private javax.swing.JLabel searPromLabel;
     private javax.swing.JButton searchButton;
     private javax.swing.JPanel searchPanel;
     private javax.swing.JButton searchPersonbtn;
@@ -858,6 +927,7 @@ private PersonDirectory personDirectory = new PersonDirectory();
     private javax.swing.JLabel strAddLabel;
     private javax.swing.JLabel strAddLabel1;
     private javax.swing.JLabel titleLabel1;
+    private javax.swing.JLabel titleLabel2;
     private javax.swing.JLabel titlelbl;
     private javax.swing.JLabel unitNoLabel;
     private javax.swing.JLabel unitNoLabel1;
