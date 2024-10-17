@@ -24,6 +24,10 @@ public class Person {
         this.homeAddress = homeAddress;
         this.workAddress = workAddress;
     }
+
+    Person(String firstName, String lastName, String ssn, String age, Address homeAddress, Address workAddress) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 
     public String getFirstName() {

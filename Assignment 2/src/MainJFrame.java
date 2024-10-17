@@ -41,11 +41,11 @@ private PersonDirectory personDirectory = new PersonDirectory();
     private JTable personTable;
 
     private void addSampleData() {
-    personDirectory.addPerson(new Person("Alice", "Johnson", "123-45-6789", 30,
-            new Address("123 Elm St", "101", "Los Angeles", "CA", "90001", "555-1234"),
+    personDirectory.addPerson(new Person("Frida", "Liu", "123-45-6789", 32,
+            new Address("123 Elm St", "101", "Santa Clara", "CA", "90001", "555-1234"),
             new Address("456 Maple Ave", "201", "Los Angeles", "CA", "90002", "555-5678")));
 
-    personDirectory.addPerson(new Person("Bob", "Smith", "234-56-7890", 40,
+    personDirectory.addPerson(new Person("Xiangyi", "Chen", "234-56-7890", 18,
             new Address("789 Pine St", "202", "San Francisco", "CA", "94107", "555-8765"),
             new Address("987 Oak St", "303", "San Francisco", "CA", "94108", "555-4321")));
 
@@ -616,16 +616,11 @@ private PersonDirectory personDirectory = new PersonDirectory();
         System.out.println("Add Person button clicked");
         CardLayout cardLayout = (CardLayout) WorkArea.getLayout();
         cardLayout.show(WorkArea, "addPanel"); 
-        
-
     }//GEN-LAST:event_addbtnActionPerformed
 
     private void listbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listbtnActionPerformed
                                               
-        // Print to console for debugging purposes
         System.out.println("List Person button clicked");
-
-        // Show the list panel using CardLayout
         CardLayout cardLayout = (CardLayout) WorkArea.getLayout();
         cardLayout.show(WorkArea, "listPanel"); 
 
@@ -682,54 +677,64 @@ private PersonDirectory personDirectory = new PersonDirectory();
 
     private void updatebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updatebtnActionPerformed
         // TODO add your handling code here:
+                                            
         String firstName = firNaTextField.getText().trim();
         String lastName = lasNaTextField.getText().trim();
-        String ssn = ssnTextField.getText().trim();
+        String ssn = ssnTextField.getText().trim(); 
         String ageText = ageTextField.getText().trim();
+
         String homeStreet = homeStrtxt.getText().trim();
         String homeUnit = homeUnitNotxt.getText().trim();
         String homeCity = homeCitytxt.getText().trim();
         String homeState = homeStatetxt.getText().trim();
         String homeZip = homeziptxt.getText().trim();
         String homePhone = homePhoTxt.getText().trim();
+
         String workStreet = workStrAddTxt.getText().trim();
         String workUnit = workUnitNoTxt.getText().trim();
         String workCity = workCityTxt.getText().trim();
         String workState = workStateTxt.getText().trim();
         String workZip = workZipTxt.getText().trim();
         String workPhone = workPhoTxt.getText().trim();
-
     
-    if (firstName.isEmpty() || lastName.isEmpty() || ssn.isEmpty() || ageText.isEmpty() ||
-        homeStreet.isEmpty() || homeCity.isEmpty() || homeState.isEmpty() || homeZip.isEmpty() ||
-        homePhone.isEmpty() || workStreet.isEmpty() || workCity.isEmpty() || 
-        workState.isEmpty() || workZip.isEmpty() || workPhone.isEmpty()) {
-        
-        JOptionPane.showMessageDialog(this, "All fields are required. Please fill out every field." );
-                                     
-        return; 
-    }
-
     
-    int age;
-    try {
-        age = Integer.parseInt(ageText);
-        if (age <= 0) {
-            JOptionPane.showMessageDialog(this, "Age must be a positive number.");
+        if (firstName.isEmpty() || lastName.isEmpty() || ssn.isEmpty() || ageText.isEmpty() ||
+            homeStreet.isEmpty() || homeCity.isEmpty() || homeState.isEmpty() || homeZip.isEmpty() ||
+            homePhone.isEmpty() || workStreet.isEmpty() || workCity.isEmpty() || 
+            workState.isEmpty() || workZip.isEmpty() || workPhone.isEmpty()) {
+
+            JOptionPane.showMessageDialog(this, "All fields are required. Please fill out every field.");
             return; 
         }
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "Please enter a valid number for age.");
-        return; 
-    }
+
+   
+        int age;
+        try {
+            age = Integer.parseInt(ageText);
+            if (age <= 0) {
+                JOptionPane.showMessageDialog(this, "Age must be a positive number.");
+                return; 
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid number for age.");
+            return; 
+        }
 
     
     Address homeAddress = new Address(homeStreet, homeUnit, homeCity, homeState, homeZip, homePhone);
     Address workAddress = new Address(workStreet, workUnit, workCity, workState, workZip, workPhone);
-    Person newPerson = new Person(firstName, lastName, ssn, age, homeAddress, workAddress);
     
-    personDirectory.addPerson(newPerson);
-    JOptionPane.showMessageDialog(this, "Person updated successfully!");
+    
+    Person updatedPerson = new Person(firstName, lastName, ssn, age, homeAddress, workAddress);
+    String criteria = searchTxt.getText().trim();
+    
+    boolean isUpdated = personDirectory.updatePerson(criteria, updatedPerson);
+    
+        if (isUpdated) {
+            JOptionPane.showMessageDialog(this, "Person updated successfully!");
+        } else {
+            JOptionPane.showMessageDialog(this, "No person found with the provided criteria.");
+        }   
     }//GEN-LAST:event_updatebtnActionPerformed
 
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed

@@ -34,18 +34,29 @@ public class PersonDirectory {
     return null;  
     }  
     
-    public boolean updatePerson(String ssn, Person updatedPerson) {
-    for (int i = 0; i < personList.size(); i++) {
-        if (personList.get(i).getSocialSecurityNumber().equals(ssn)) {
-            personList.set(i, updatedPerson);
-            return true; 
+    public boolean updatePerson(String criteria, Person updatedPerson) {
+        
+        for(Person person : personList){
+                if(person.getFirstName().equalsIgnoreCase(criteria)||
+                    person.getLastName().equalsIgnoreCase(criteria)||
+                    person.getHomeAddress().getStreetAddress().equalsIgnoreCase(criteria)||
+                    person.getWorkAddress().getStreetAddress().equalsIgnoreCase(criteria)){
+
+                    person.setFirstName(updatedPerson.getFirstName());
+                    person.setLastName(updatedPerson.getLastName());
+                    person.setSocialSecurityNumber(updatedPerson.getSocialSecurityNumber());
+                    person.setAge(updatedPerson.getAge());
+                    person.setHomeAddress(updatedPerson.getHomeAddress());
+                    person.setWorkAddress(updatedPerson.getWorkAddress());
+                return true; 
+            }
         }
-    }
-    return false;
+        return false;
 }
 
     
     public boolean deletePerson(String criteria){
+        
         Iterator<Person> iterator = personList.iterator();
         while (iterator.hasNext()){
             Person person = iterator.next();
@@ -60,11 +71,11 @@ public class PersonDirectory {
         return false;
     }
     
+    
+    
+    
     public List<Person> listPersons(){
         return personList;
-    }
-    
-    
-    
+    }  
     
 }
