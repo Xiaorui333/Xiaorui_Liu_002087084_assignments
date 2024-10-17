@@ -751,7 +751,7 @@ private PersonDirectory personDirectory = new PersonDirectory();
     String workZip = workZipTxt.getText().trim();
     String workPhone = workPhoTxt.getText().trim();
 
-    
+    //All the Form fields are required, No Null values are accepted
     if (firstName.isEmpty() || lastName.isEmpty() || ssn.isEmpty() || ageText.isEmpty() ||
         homeStreet.isEmpty() || homeCity.isEmpty() || homeState.isEmpty() || homeZip.isEmpty() ||
         homePhone.isEmpty() || workStreet.isEmpty() || workCity.isEmpty() || 
