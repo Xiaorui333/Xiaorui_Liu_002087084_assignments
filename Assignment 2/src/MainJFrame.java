@@ -1,7 +1,12 @@
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -16,20 +21,44 @@ public class MainJFrame extends javax.swing.JFrame {
     
 
 private PersonDirectory personDirectory = new PersonDirectory();
+    
 
     /**
      * Creates new form MainJFrame
      */
     public MainJFrame() {
         initComponents();
-        
+        addSampleData();
         WorkArea.setLayout(new CardLayout());
         WorkArea.add(addPanel, "addPanel");
         WorkArea.add(searchPanel, "searchPanel");
         WorkArea.add(listPanel, "listPanel");
-
-
+        WorkArea.add(deletePanel, "deletePanel");
+        
     }
+    private JTable personTable;
+
+    private void addSampleData() {
+    personDirectory.addPerson(new Person("Alice", "Johnson", "123-45-6789", 30,
+            new Address("123 Elm St", "101", "Los Angeles", "CA", "90001", "555-1234"),
+            new Address("456 Maple Ave", "201", "Los Angeles", "CA", "90002", "555-5678")));
+
+    personDirectory.addPerson(new Person("Bob", "Smith", "234-56-7890", 40,
+            new Address("789 Pine St", "202", "San Francisco", "CA", "94107", "555-8765"),
+            new Address("987 Oak St", "303", "San Francisco", "CA", "94108", "555-4321")));
+
+    personDirectory.addPerson(new Person("Charlie", "Brown", "345-67-8901", 28,
+            new Address("321 Cedar St", "1A", "San Jose", "CA", "95112", "555-6789"),
+            new Address("654 Birch Blvd", "401", "San Jose", "CA", "95113", "555-9876")));
+
+    personDirectory.addPerson(new Person("Diana", "Prince", "456-78-9012", 35,
+            new Address("111 Cypress Ave", "102", "Sacramento", "CA", "95814", "555-2468"),
+            new Address("999 Redwood Rd", "502", "Sacramento", "CA", "95815", "555-7531")));
+
+    personDirectory.addPerson(new Person("Emily", "Davis", "567-89-0123", 25,
+            new Address("222 Spruce Dr", "3B", "San Diego", "CA", "92101", "555-1357"),
+            new Address("888 Palm St", "604", "San Diego", "CA", "92102", "555-9753")));
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -47,7 +76,6 @@ private PersonDirectory personDirectory = new PersonDirectory();
         searchPersonbtn = new javax.swing.JButton();
         titlelbl = new javax.swing.JLabel();
         deletebtn = new javax.swing.JButton();
-        updatebtn = new javax.swing.JButton();
         WorkArea = new javax.swing.JPanel();
         searchPanel = new javax.swing.JPanel();
         titleLabel1 = new javax.swing.JLabel();
@@ -90,8 +118,9 @@ private PersonDirectory personDirectory = new PersonDirectory();
         workUnitNoTxt = new javax.swing.JTextField();
         stateLabel1 = new javax.swing.JLabel();
         cityLabel1 = new javax.swing.JLabel();
-        titleLabel = new javax.swing.JLabel();
-        saveButton = new javax.swing.JButton();
+        createButton = new javax.swing.JButton();
+        updatebtn = new javax.swing.JButton();
+        deletePanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -130,13 +159,6 @@ private PersonDirectory personDirectory = new PersonDirectory();
             }
         });
 
-        updatebtn.setText("Update");
-        updatebtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updatebtnActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout ContralPanelLayout = new javax.swing.GroupLayout(ContralPanel);
         ContralPanel.setLayout(ContralPanelLayout);
         ContralPanelLayout.setHorizontalGroup(
@@ -148,8 +170,7 @@ private PersonDirectory personDirectory = new PersonDirectory();
                     .addComponent(addbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(listbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(searchPersonbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(deletebtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(updatebtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(deletebtn, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ContralPanelLayout.setVerticalGroup(
@@ -163,11 +184,9 @@ private PersonDirectory personDirectory = new PersonDirectory();
                 .addComponent(listbtn)
                 .addGap(26, 26, 26)
                 .addComponent(searchPersonbtn)
-                .addGap(26, 26, 26)
-                .addComponent(updatebtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(deletebtn)
-                .addGap(76, 76, 76))
+                .addContainerGap(136, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(ContralPanel);
@@ -362,14 +381,17 @@ private PersonDirectory personDirectory = new PersonDirectory();
 
         cityLabel1.setText("City");
 
-        titleLabel.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        titleLabel.setText("Add Person");
-
-        saveButton.setText("Save");
-        saveButton.addActionListener(new java.awt.event.ActionListener() {
+        createButton.setText("Create");
+        createButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveButtonActionPerformed(evt);
+                createButtonActionPerformed(evt);
+            }
+        });
+
+        updatebtn.setText("Update");
+        updatebtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updatebtnActionPerformed(evt);
             }
         });
 
@@ -435,25 +457,20 @@ private PersonDirectory personDirectory = new PersonDirectory();
                                 .addGap(34, 34, 34)
                                 .addComponent(workZipTxt))))
                     .addGroup(addPanelLayout.createSequentialGroup()
-                        .addGap(207, 207, 207)
-                        .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(205, 205, 205)
+                        .addGroup(addPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(createButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(updatebtn, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(addPanelLayout.createSequentialGroup()
                 .addGap(6, 6, 6)
-                .addGroup(addPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(addPanelLayout.createSequentialGroup()
-                        .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 595, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(addPanelLayout.createSequentialGroup()
-                        .addComponent(homeAddPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap(202, Short.MAX_VALUE))))
+                .addComponent(homeAddPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(202, Short.MAX_VALUE))
         );
         addPanelLayout.setVerticalGroup(
             addPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(addPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(titleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(44, 44, 44)
                 .addGroup(addPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(addPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(firNaTextField)
@@ -467,9 +484,9 @@ private PersonDirectory personDirectory = new PersonDirectory();
                         .addComponent(agelbl)
                         .addComponent(ageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(ssnlbl, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(59, 59, 59)
+                .addGap(32, 32, 32)
                 .addComponent(homeAddPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(33, 33, 33)
                 .addComponent(workAddLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(addPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -497,12 +514,27 @@ private PersonDirectory personDirectory = new PersonDirectory();
                                 .addGroup(addPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(phoLabel1)
                                     .addComponent(workPhoTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                .addComponent(saveButton)
-                .addGap(30, 30, 30))
+                .addGap(18, 18, 18)
+                .addComponent(createButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(updatebtn)
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         WorkArea.add(addPanel, "card2");
+
+        javax.swing.GroupLayout deletePanelLayout = new javax.swing.GroupLayout(deletePanel);
+        deletePanel.setLayout(deletePanelLayout);
+        deletePanelLayout.setHorizontalGroup(
+            deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 643, Short.MAX_VALUE)
+        );
+        deletePanelLayout.setVerticalGroup(
+            deletePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 458, Short.MAX_VALUE)
+        );
+
+        WorkArea.add(deletePanel, "card5");
 
         jSplitPane1.setRightComponent(WorkArea);
 
@@ -534,20 +566,55 @@ private PersonDirectory personDirectory = new PersonDirectory();
     }//GEN-LAST:event_addbtnActionPerformed
 
     private void listbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listbtnActionPerformed
-        // TODO add your handling code here:
+                                              
+        // Print to console for debugging purposes
         System.out.println("List Person button clicked");
+
+        // Show the list panel using CardLayout
         CardLayout cardLayout = (CardLayout) WorkArea.getLayout();
         cardLayout.show(WorkArea, "listPanel"); 
-        
+
+        // Ensure listPanel has a layout that allows components to fill the space
+        listPanel.setLayout(new BorderLayout());
+
+        // Create a new JTable and wrap it in a JScrollPane
+        personTable = new JTable();
+        JScrollPane scrollPane = new JScrollPane(personTable);
+        scrollPane.setPreferredSize(new Dimension(500, 300)); 
+
+        // Clear any existing components and add the new scroll pane
+        listPanel.removeAll();
+        listPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // Ensure the panel is refreshed
+        listPanel.revalidate();
+        listPanel.repaint();
+
+        // Define the columns for the JTable
+        String[] columnNames = {"First Name", "Last Name", "SSN", "Age", "Home Address", "Work Address"};
+
+        // Get the list of persons from the person directory
         List<Person> persons = personDirectory.listPersons();
 
-        StringBuilder sb = new StringBuilder();
-        for (Person person : persons) {
-            sb.append(person.toString()).append("\n");
-        }
+        // Create a table model and set it for the JTable
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        personTable.setModel(tableModel);
 
-        JOptionPane.showMessageDialog(this, sb.toString(), "List of Persons", JOptionPane.INFORMATION_MESSAGE);
-        
+        // Populate the table model with the data
+        for (Person person : persons) {
+            String homeAddress = person.getHomeAddress().toString(); 
+            String workAddress = person.getWorkAddress().toString(); 
+            Object[] rowData = {
+                person.getFirstName(),
+                person.getLastName(),
+                person.getSocialSecurityNumber(),
+                person.getAge(),
+                homeAddress,
+                workAddress
+            };
+            tableModel.addRow(rowData);
+        }
+      
     }//GEN-LAST:event_listbtnActionPerformed
 
     private void searchPersonbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchPersonbtnActionPerformed
@@ -560,13 +627,66 @@ private PersonDirectory personDirectory = new PersonDirectory();
 
     private void deletebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletebtnActionPerformed
         // TODO add your handling code here:
+        CardLayout cardLayout = (CardLayout) WorkArea.getLayout();
+        cardLayout.show(WorkArea, "deletePanel"); 
+        
+        
+        
     }//GEN-LAST:event_deletebtnActionPerformed
 
     private void updatebtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updatebtnActionPerformed
         // TODO add your handling code here:
+        String firstName = firNaTextField.getText().trim();
+        String lastName = lasNaTextField.getText().trim();
+        String ssn = ssnTextField.getText().trim();
+        String ageText = ageTextField.getText().trim();
+        String homeStreet = homeStrtxt.getText().trim();
+        String homeUnit = homeUnitNotxt.getText().trim();
+        String homeCity = homeCitytxt.getText().trim();
+        String homeState = homeStatetxt.getText().trim();
+        String homeZip = homeziptxt.getText().trim();
+        String homePhone = homePhoTxt.getText().trim();
+        String workStreet = workStrAddTxt.getText().trim();
+        String workUnit = workUnitNoTxt.getText().trim();
+        String workCity = workCityTxt.getText().trim();
+        String workState = workStateTxt.getText().trim();
+        String workZip = workZipTxt.getText().trim();
+        String workPhone = workPhoTxt.getText().trim();
+
+    
+    if (firstName.isEmpty() || lastName.isEmpty() || ssn.isEmpty() || ageText.isEmpty() ||
+        homeStreet.isEmpty() || homeCity.isEmpty() || homeState.isEmpty() || homeZip.isEmpty() ||
+        homePhone.isEmpty() || workStreet.isEmpty() || workCity.isEmpty() || 
+        workState.isEmpty() || workZip.isEmpty() || workPhone.isEmpty()) {
+        
+        JOptionPane.showMessageDialog(this, "All fields are required. Please fill out every field." );
+                                     
+        return; 
+    }
+
+    
+    int age;
+    try {
+        age = Integer.parseInt(ageText);
+        if (age <= 0) {
+            JOptionPane.showMessageDialog(this, "Age must be a positive number.");
+            return; 
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Please enter a valid number for age.");
+        return; 
+    }
+
+    
+    Address homeAddress = new Address(homeStreet, homeUnit, homeCity, homeState, homeZip, homePhone);
+    Address workAddress = new Address(workStreet, workUnit, workCity, workState, workZip, workPhone);
+    Person newPerson = new Person(firstName, lastName, ssn, age, homeAddress, workAddress);
+    
+    personDirectory.addPerson(newPerson);
+    JOptionPane.showMessageDialog(this, "Person updated successfully!");
     }//GEN-LAST:event_updatebtnActionPerformed
 
-    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+    private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
         // TODO add your handling code here:
     String firstName = firNaTextField.getText().trim();
     String lastName = lasNaTextField.getText().trim();
@@ -617,17 +737,46 @@ private PersonDirectory personDirectory = new PersonDirectory();
     personDirectory.addPerson(newPerson);
     JOptionPane.showMessageDialog(this, "Person added successfully!");
 
-    }//GEN-LAST:event_saveButtonActionPerformed
+    }//GEN-LAST:event_createButtonActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+  
         // TODO add your handling code here:
-        String criteria=searchTxt.getText();
-        Person foundPerson=personDirectory.searchPerson(criteria);
-        if(foundPerson != null){
-            JOptionPane.showMessageDialog(this, "Person found!");
-        }else{
+        String criteria = searchTxt.getText();
+        Person foundPerson = personDirectory.searchPerson(criteria);
+
+        if (foundPerson!= null) {
+            System.out.println("Found person");
+
+        
+        firNaTextField.setText(foundPerson.getFirstName());
+        lasNaTextField.setText(foundPerson.getLastName());
+        ssnTextField.setText(foundPerson.getSocialSecurityNumber());
+        ageTextField.setText(String.valueOf(foundPerson.getAge()));
+
+        
+        homeStrtxt.setText(foundPerson.getHomeAddress().getStreetAddress());
+        homeUnitNotxt.setText(foundPerson.getHomeAddress().getUnitNumber());
+        homeCitytxt.setText(foundPerson.getHomeAddress().getCity());
+        homeStatetxt.setText(foundPerson.getHomeAddress().getState());
+        homeziptxt.setText(foundPerson.getHomeAddress().getZipCode());
+        homePhoTxt.setText(foundPerson.getHomeAddress().getPhoneNumber());
+
+        
+        workStrAddTxt.setText(foundPerson.getWorkAddress().getStreetAddress());
+        workUnitNoTxt.setText(foundPerson.getWorkAddress().getUnitNumber());
+        workCityTxt.setText(foundPerson.getWorkAddress().getCity());
+        workStateTxt.setText(foundPerson.getWorkAddress().getState());
+        workZipTxt.setText(foundPerson.getWorkAddress().getZipCode());
+        workPhoTxt.setText(foundPerson.getWorkAddress().getPhoneNumber());
+
+        
+        CardLayout cardLayout = (CardLayout) WorkArea.getLayout();
+        cardLayout.show(WorkArea, "addPanel");
+        } else {
             JOptionPane.showMessageDialog(this, "No person found!");
         }
+
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void homeStrtxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeStrtxtActionPerformed
@@ -678,6 +827,8 @@ private PersonDirectory personDirectory = new PersonDirectory();
     private javax.swing.JLabel agelbl;
     private javax.swing.JLabel cityLabel;
     private javax.swing.JLabel cityLabel1;
+    private javax.swing.JButton createButton;
+    private javax.swing.JPanel deletePanel;
     private javax.swing.JButton deletebtn;
     private javax.swing.JTextField firNaTextField;
     private javax.swing.JLabel firNalbl;
@@ -696,7 +847,6 @@ private PersonDirectory personDirectory = new PersonDirectory();
     private javax.swing.JButton listbtn;
     private javax.swing.JLabel phoLabel;
     private javax.swing.JLabel phoLabel1;
-    private javax.swing.JButton saveButton;
     private javax.swing.JButton searchButton;
     private javax.swing.JPanel searchPanel;
     private javax.swing.JButton searchPersonbtn;
@@ -707,7 +857,6 @@ private PersonDirectory personDirectory = new PersonDirectory();
     private javax.swing.JLabel stateLabel1;
     private javax.swing.JLabel strAddLabel;
     private javax.swing.JLabel strAddLabel1;
-    private javax.swing.JLabel titleLabel;
     private javax.swing.JLabel titleLabel1;
     private javax.swing.JLabel titlelbl;
     private javax.swing.JLabel unitNoLabel;
