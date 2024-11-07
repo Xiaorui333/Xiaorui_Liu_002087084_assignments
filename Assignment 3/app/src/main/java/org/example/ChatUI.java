@@ -1,12 +1,13 @@
 package org.example;
 
+import io.github.stefanbratanov.jvm.openai.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import io.github.stefanbratanov.jvm.openai.*;
 
 public class ChatUI {
     private JFrame frame;
@@ -14,10 +15,10 @@ public class ChatUI {
     private JPanel inputPanel;
     private JTextField inputField;
     private JButton sendButton;
-    private List<ChatMessage> messageHistory;  
+    private List<ChatMessage> messageHistory;  // Store full message history for each request
 
     public ChatUI() {
-        messageHistory = new ArrayList<>();
+        messageHistory = new ArrayList<>();  // Initialize message history
         setupUI();
     }
 
@@ -44,15 +45,15 @@ public class ChatUI {
             public void actionPerformed(ActionEvent e) {
                 String userMessage = inputField.getText();
                 if (!userMessage.trim().isEmpty()) {
-                    String modifiedMessage = userMessage + " Please provide a concise response and prioritize the first answer.";
+                    String modifiedMessage = userMessage + " Please provide a concise response and prioritize the first answer."; // Modify user message
 
-                    chatArea.append("User: " + userMessage + "\n");
-                    messageHistory.add(ChatMessage.userMessage(modifiedMessage));
+                    chatArea.append("User: " + userMessage + "\n\n");
+                    messageHistory.add(ChatMessage.userMessage(modifiedMessage));  // Add modified user message to history
                     inputField.setText("");
 
                     String response = getAIResponse();
-                    chatArea.append("AI: " + response + "\n");
-                    messageHistory.add(ChatMessage.assistantMessage(response));
+                    chatArea.append("AI: " + response + "\n\n");
+                    messageHistory.add(ChatMessage.assistantMessage(response));  // Add AI response to history
                 }
             }
         });
@@ -69,12 +70,12 @@ public class ChatUI {
         ChatClient chatClient = openAI.chatClient();
         CreateChatCompletionRequest createChatCompletionRequest = CreateChatCompletionRequest.newBuilder()
                 .model(OpenAIModel.GPT_3_5_TURBO)
-                .messages(messageHistory)
+                .messages(messageHistory)  // Send full message history
                 .build();
         ChatCompletion chatCompletion = chatClient.createChatCompletion(createChatCompletionRequest);
         var choices = chatCompletion.choices();
         for (var m : choices) {
-            response = m.message().content();
+            response = m.message().content();  // Get the AI's response
         }
         return response;
     }
