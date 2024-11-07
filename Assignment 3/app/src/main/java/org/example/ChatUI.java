@@ -1,0 +1,85 @@
+package org.example;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import io.github.stefanbratanov.jvm.openai.*;
+
+public class ChatUI {
+    private JFrame frame;
+    private JTextArea chatArea;
+    private JPanel inputPanel;
+    private JTextField inputField;
+    private JButton sendButton;
+    private List<ChatMessage> messageHistory;  
+
+    public ChatUI() {
+        messageHistory = new ArrayList<>();
+        setupUI();
+    }
+
+    private void setupUI() {
+        frame = new JFrame("Chat UI");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(600, 400);
+        frame.setLayout(new BorderLayout());
+
+        chatArea = new JTextArea();
+        chatArea.setEditable(false);
+        frame.add(new JScrollPane(chatArea), BorderLayout.CENTER);
+
+        inputPanel = new JPanel(new BorderLayout());
+        frame.add(inputPanel, BorderLayout.SOUTH);
+
+        inputField = new JTextField();
+        sendButton = new JButton("Send");
+        inputPanel.add(inputField, BorderLayout.CENTER);
+        inputPanel.add(sendButton, BorderLayout.EAST);
+
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userMessage = inputField.getText();
+                if (!userMessage.trim().isEmpty()) {
+                    String modifiedMessage = userMessage + " Please provide a concise response and prioritize the first answer.";
+
+                    chatArea.append("User: " + userMessage + "\n");
+                    messageHistory.add(ChatMessage.userMessage(modifiedMessage));
+                    inputField.setText("");
+
+                    String response = getAIResponse();
+                    chatArea.append("AI: " + response + "\n");
+                    messageHistory.add(ChatMessage.assistantMessage(response));
+                }
+            }
+        });
+
+        frame.setVisible(true);
+    }
+
+    private String getAIResponse() {
+        String response = "";
+        var apiKey = System.getenv("OPENAI_API_KEY");
+        var builder = OpenAI.newBuilder(apiKey);
+        OpenAI openAI = builder.build();
+
+        ChatClient chatClient = openAI.chatClient();
+        CreateChatCompletionRequest createChatCompletionRequest = CreateChatCompletionRequest.newBuilder()
+                .model(OpenAIModel.GPT_3_5_TURBO)
+                .messages(messageHistory)
+                .build();
+        ChatCompletion chatCompletion = chatClient.createChatCompletion(createChatCompletionRequest);
+        var choices = chatCompletion.choices();
+        for (var m : choices) {
+            response = m.message().content();
+        }
+        return response;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(ChatUI::new); // Ensure the UI is created on the Event Dispatch Thread
+    }
+}
