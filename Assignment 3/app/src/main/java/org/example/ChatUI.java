@@ -15,10 +15,10 @@ public class ChatUI {
     private JPanel inputPanel;
     private JTextField inputField;
     private JButton sendButton;
-    private List<ChatMessage> messageHistory;  // Store full message history for each request
+    private List<ChatMessage> messageHistory;
 
     public ChatUI() {
-        messageHistory = new ArrayList<>();  // Initialize message history
+        messageHistory = new ArrayList<>();
         setupUI();
     }
 
@@ -48,12 +48,12 @@ public class ChatUI {
                     String modifiedMessage = userMessage + " Please provide a concise response and prioritize the first answer."; // Modify user message
 
                     chatArea.append("User: " + userMessage + "\n\n");
-                    messageHistory.add(ChatMessage.userMessage(modifiedMessage));  // Add modified user message to history
+                    messageHistory.add(ChatMessage.userMessage(modifiedMessage));
                     inputField.setText("");
 
                     String response = getAIResponse();
                     chatArea.append("AI: " + response + "\n\n");
-                    messageHistory.add(ChatMessage.assistantMessage(response));  // Add AI response to history
+                    messageHistory.add(ChatMessage.assistantMessage(response));
                 }
             }
         });
@@ -75,7 +75,7 @@ public class ChatUI {
         ChatCompletion chatCompletion = chatClient.createChatCompletion(createChatCompletionRequest);
         var choices = chatCompletion.choices();
         for (var m : choices) {
-            response = m.message().content();  // Get the AI's response
+            response = m.message().content();
         }
         return response;
     }
