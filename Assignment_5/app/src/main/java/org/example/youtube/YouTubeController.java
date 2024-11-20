@@ -33,40 +33,47 @@ public class YouTubeController {
         String password = "Frida1195433053#";
         String url = "jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres";
         Settings settings = new Settings()
-                .withExecuteLogging(true) // Disable logging of SQL executions
-                .withRenderFormatted(false); // Avoid pretty-printing SQL, which adds verbosity
+                .withExecuteLogging(true)
+                .withRenderFormatted(false);
 
         // Connection is the only JDBC resource that we need
         // PreparedStatement and ResultSet are handled by jOOQ, internally
-        Connection conn = DriverManager.getConnection(url, userName, password);
-        DSLContext create = DSL.using(conn, SQLDialect.POSTGRES, settings);
+        try (Connection conn = DriverManager.getConnection(url, userName, password)) {
+            DSLContext create = DSL.using(conn, SQLDialect.POSTGRES, settings);
 
-        // Step 1: Query cached results from the database using JOOQ
-        List<String> cachedResults = create.select(SEARCH_RESULTS.RESULT)
-                .from(SEARCH_RESULTS)
-                .where(SEARCH_RESULTS.TOPIC.eq(topic))
-                .fetch()
-                .stream()
-                .map(record -> record.get(SEARCH_RESULTS.RESULT))
-                .collect(Collectors.toList());
+            // Step 1: Query cached results from the database using JOOQ
+            List<String> cachedResults = create.select(SEARCH_RESULTS.RESULT)
+                    .from(SEARCH_RESULTS)
+                    .where(SEARCH_RESULTS.TOPIC.equalIgnoreCase(topic))
+                    .fetch()
+                    .stream()
+                    .map(record -> record.get(SEARCH_RESULTS.RESULT))
+                    .collect(Collectors.toList());
 
-        if (!cachedResults.isEmpty()) {
-            return buildHtmlResponse(topic, cachedResults);
+            if (!cachedResults.isEmpty()) {
+                System.out.println("Found cached results in the database for topic: " + topic);
+                return buildHtmlResponse(topic, cachedResults);
+            }
+
+
+            // Step 2: Call YouTubeService to fetch new results
+            System.out.println("No cached results found. Calling YouTube API for topic: " + topic);
+            List<String> newResults = youTubeService.search(topic);
+
+            // Step 3: Persist new results in the database
+            newResults.forEach(result ->
+                    create.insertInto(SEARCH_RESULTS)
+                            .columns(SEARCH_RESULTS.TOPIC, SEARCH_RESULTS.RESULT)
+                            .values(topic, result)
+                            .execute()
+            );
+
+            return buildHtmlResponse(topic, newResults);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "An unexpected error occurred.";
         }
-
-
-        // Step 2: Call YouTubeService to fetch new results
-        List<String> newResults = youTubeService.search(topic);
-
-        // Step 3: Persist new results in the database
-        newResults.forEach(result ->
-                create.insertInto(SEARCH_RESULTS)
-                        .columns(SEARCH_RESULTS.TOPIC, SEARCH_RESULTS.RESULT)
-                        .values(topic, result)
-                        .execute()
-        );
-
-        return buildHtmlResponse(topic, newResults);
     }
 
     private String buildHtmlResponse(String topic, List<String> results) {
