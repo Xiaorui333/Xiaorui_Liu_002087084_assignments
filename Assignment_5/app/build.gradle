@@ -46,33 +46,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-jooq {
-    version = '3.18.0' // Ensure it matches your JOOQ version
-    configurations {
-        main { // Name of the JOOQ configuration
-            generationTool {
-                logging = 'WARN'
-                jdbc {
-                    driver = 'org.postgresql.Driver'
-                    url = 'jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres'
-                    user = 'postgres.uzankumhwijvaxvbfwmh'
-                    password = 'Frida1195433053#'
-                }
-                generator {
-                    name = 'org.jooq.codegen.DefaultGenerator'
-                    database {
-                        name = 'org.jooq.meta.postgres.PostgresDatabase'
-                        inputSchema = 'public'
-                    }
-                    target {
-                        packageName = 'com.example.jooq'
-                        directory = 'src/main/java/com/example/jooq' // Change this directory to avoid overwriting src/main/java
-                    }
-                }
-            }
-        }
-    }
-}
+
 
 
 
