@@ -9,9 +9,8 @@ plugins {
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.3'
     id 'java'
+    id 'nu.studer.jooq' version '8.2' // JOOQ Gradle Plugin
 }
-
-apply plugin: 'io.spring.dependency-management'
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -29,13 +28,51 @@ dependencies {
     implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
     implementation 'com.google.apis:google-api-services-youtube:v3-rev222-1.25.0'
 
+    // PostgreSQL Driver
+    implementation 'org.postgresql:postgresql:42.6.0'
+
+    // JOOQ runtime dependency for querying
+    implementation 'org.jooq:jooq:3.18.0'
+
     // Spring Boot Testing Starter
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // PostgreSQL Driver for JOOQ code generation
+    jooqGenerator 'org.postgresql:postgresql:42.6.0'
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
+
+jooq {
+    version = '3.18.0' // Ensure it matches your JOOQ version
+    configurations {
+        main { // Name of the JOOQ configuration
+            generationTool {
+                logging = 'WARN'
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = 'jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+                    user = 'postgres.uzankumhwijvaxvbfwmh'
+                    password = 'Frida1195433053#'
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                    }
+                    target {
+                        packageName = 'com.example.jooq'
+                        directory = 'src/main/java/com/example/jooq' // Change this directory to avoid overwriting src/main/java
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 
