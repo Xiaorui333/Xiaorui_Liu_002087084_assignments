@@ -30,6 +30,8 @@ public class ChatUI {
 
         chatArea = new JTextArea();
         chatArea.setEditable(false);
+        chatArea.setLineWrap(true);
+        chatArea.setWrapStyleWord(true);
         frame.add(new JScrollPane(chatArea), BorderLayout.CENTER);
 
         inputPanel = new JPanel(new BorderLayout());
