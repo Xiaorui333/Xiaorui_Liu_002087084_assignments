@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,25 +25,33 @@ public class ChatUI {
     private JButton sendButton;
     private List<ChatMessage> messageHistory;
 
-    private static final String url = "postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres";
-    private static final String userName = "postgres.tqbovlsrhixnvhquimtz";
-    private static final String password = "Frida1195433053#";
-    Settings settings = new Settings()
-            .withExecuteLogging(true)
-            .withRenderFormatted(false);
+    private static final String DATABASE_URL = "jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres";
+    private static final String DATABASE_USERNAME = "postgres.tqbovlsrhixnvhquimtz";
+    private static final String DATABASE_PASSWORD = "Frida1195433053#";
 
     private DSLContext dslContext;
 
     public ChatUI() {
-        try (Connection conn = DriverManager.getConnection(url, userName, password)) {
-            DSLContext create = DSL.using(conn, SQLDialect.POSTGRES, settings);
-        } catch (Exception e) {
+        try {
+            initializeDatabaseConnection();
+        } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("An unexpected error occurred.");
+            JOptionPane.showMessageDialog(null, "Failed to connect to the database. Exiting...");
+            System.exit(1); // Exit if the database connection fails
         }
+
         messageHistory = new ArrayList<>();
         setupUI();
         loadMessageHistoryFromDatabase();
+    }
+
+    private void initializeDatabaseConnection() throws SQLException {
+        Connection connection = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
+        Settings settings = new Settings()
+                .withExecuteLogging(true)
+                .withRenderFormatted(false);
+        dslContext = DSL.using(connection, SQLDialect.POSTGRES, settings);
+        System.out.println("Database connection established successfully!");
     }
 
     private void setupUI() {
@@ -65,63 +74,48 @@ public class ChatUI {
         inputPanel.add(inputField, BorderLayout.CENTER);
         inputPanel.add(sendButton, BorderLayout.EAST);
 
-
-
         sendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String userMessage = inputField.getText();
-                if (!userMessage.trim().isEmpty()) {
-                    String modifiedMessage = userMessage + " Please provide a concise response and prioritize the first answer."; // Modify user message
-
-                    chatArea.append("User: " + userMessage + "\n\n");
-                    ChatMessage chatMessage = ChatMessage.userMessage(modifiedMessage);
-                    messageHistory.add(chatMessage);
-                    saveMessageToDatabase(chatMessage);
-                    inputField.setText("");
-
-                    String response = getAIResponse();
-                    chatArea.append("AI: " + response + "\n\n");
-                    ChatMessage aiMessage = ChatMessage.assistantMessage(response);
-                    messageHistory.add(aiMessage);
-                    saveMessageToDatabase(aiMessage);
+                String userMessage = inputField.getText().trim();
+                if (!userMessage.isEmpty()) {
+                    handleUserMessage(userMessage);
                 }
             }
         });
 
         frame.setVisible(true);
     }
-    // check interface ChatMessage from io. github. stefanbratanov. jvm. openai
-    public String getMessageContent(ChatMessage m) {
-        if (m instanceof ChatMessage.SystemMessage systemMessage) {
-            return systemMessage.content();
-        } else if (m instanceof ChatMessage.UserMessage<?> userMessage) {
-            // Handles both UserMessageWithTextContent and UserMessageWithContentParts
-            return userMessage.content().toString();
-        } else if (m instanceof ChatMessage.AssistantMessage assistantMessage) {
-            return assistantMessage.content();
-        } else if (m instanceof ChatMessage.ToolMessage toolMessage) {
-            return toolMessage.content();
-        } else {
-            throw new IllegalArgumentException("Unknown ChatMessage type");
-        }
-    }
 
+    private void handleUserMessage(String userMessage) {
+        chatArea.append("User: " + userMessage + "\n\n");
+
+        ChatMessage userChatMessage = ChatMessage.userMessage(userMessage);
+        messageHistory.add(userChatMessage);
+        saveMessageToDatabase(userChatMessage);
+
+        String aiResponse = getAIResponse();
+        chatArea.append("AI: " + aiResponse + "\n\n");
+
+        ChatMessage aiChatMessage = ChatMessage.assistantMessage(aiResponse);
+        messageHistory.add(aiChatMessage);
+        saveMessageToDatabase(aiChatMessage);
+
+        inputField.setText("");
+    }
 
     private void saveMessageToDatabase(ChatMessage message) {
         try {
-
-            // Insert the role and content into the database using jOOQ
             dslContext.insertInto(Tables.MESSAGE_HISTORY)
                     .set(Tables.MESSAGE_HISTORY.ROLE, message.role())
                     .set(Tables.MESSAGE_HISTORY.CONTENT, getMessageContent(message))
                     .execute();
+            System.out.println("Message saved to database: " + message.role());
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failed to save message to database: " + e.getMessage());
         }
     }
-
 
     private void loadMessageHistoryFromDatabase() {
         try {
@@ -130,38 +124,56 @@ public class ChatUI {
                     .forEach(record -> {
                         String role = record.get(Tables.MESSAGE_HISTORY.ROLE);
                         String content = record.get(Tables.MESSAGE_HISTORY.CONTENT);
-                        ChatMessage message = "user".equals(role)
+
+                        ChatMessage message = "user".equalsIgnoreCase(role)
                                 ? ChatMessage.userMessage(content)
                                 : ChatMessage.assistantMessage(content);
+
                         messageHistory.add(message);
                         chatArea.append(role.substring(0, 1).toUpperCase() + role.substring(1) + ": " + content + "\n\n");
                     });
+            System.out.println("Chat history loaded from database.");
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("Failed to load chat history from database.");
         }
     }
 
+    public String getMessageContent(ChatMessage message) {
+        if (message instanceof ChatMessage.SystemMessage systemMessage) {
+            return systemMessage.content();
+        } else if (message instanceof ChatMessage.UserMessage<?> userMessage) {
+            return userMessage.content().toString();
+        } else if (message instanceof ChatMessage.AssistantMessage assistantMessage) {
+            return assistantMessage.content();
+        } else if (message instanceof ChatMessage.ToolMessage toolMessage) {
+            return toolMessage.content();
+        } else {
+            throw new IllegalArgumentException("Unknown ChatMessage type");
+        }
+    }
 
     private String getAIResponse() {
-        String response = "";
-        var apiKey = System.getenv("OPENAI_API_KEY");
-        var builder = OpenAI.newBuilder(apiKey);
-        OpenAI openAI = builder.build();
+        try {
+            String apiKey = System.getenv("OPENAI_API_KEY");
+            OpenAI openAI = OpenAI.newBuilder(apiKey).build();
+            ChatClient chatClient = openAI.chatClient();
 
-        ChatClient chatClient = openAI.chatClient();
-        CreateChatCompletionRequest createChatCompletionRequest = CreateChatCompletionRequest.newBuilder()
-                .model(OpenAIModel.GPT_3_5_TURBO)
-                .messages(messageHistory)  // Send full message history
-                .build();
-        ChatCompletion chatCompletion = chatClient.createChatCompletion(createChatCompletionRequest);
-        var choices = chatCompletion.choices();
-        for (var m : choices) {
-            response = m.message().content();
+            CreateChatCompletionRequest request = CreateChatCompletionRequest.newBuilder()
+                    .model(OpenAIModel.GPT_3_5_TURBO)
+                    .messages(messageHistory)
+                    .build();
+
+            ChatCompletion completion = chatClient.createChatCompletion(request);
+            return completion.choices().get(0).message().content();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Sorry, I couldn't process your request.";
         }
-        return response;
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(ChatUI::new); // Ensure the UI is created on the Event Dispatch Thread
+        SwingUtilities.invokeLater(ChatUI::new);
     }
 }
+

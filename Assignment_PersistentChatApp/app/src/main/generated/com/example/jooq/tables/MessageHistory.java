@@ -59,7 +59,7 @@ public class MessageHistory extends TableImpl<MessageHistoryRecord> {
     /**
      * The column <code>public.message_history.role</code>.
      */
-    public final TableField<MessageHistoryRecord, String> ROLE = createField(DSL.name("role"), SQLDataType.VARCHAR(255).nullable(false), this, "");
+    public final TableField<MessageHistoryRecord, String> ROLE = createField(DSL.name("role"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.message_history.content</code>.
