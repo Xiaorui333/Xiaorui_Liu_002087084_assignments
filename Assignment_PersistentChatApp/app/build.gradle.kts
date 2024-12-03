@@ -55,3 +55,28 @@ dependencies {
         mainClass.set("org.example.App")
     }
 }
+jooq {
+    configurations {
+        create("main") {
+            generateSchemaSourceOnCompilation.set(true)
+            jooqConfiguration.apply {
+                jdbc.apply {
+                    driver = "org.postgresql.Driver"
+                    url = "jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres"
+                    user = "postgres.tqbovlsrhixnvhquimtz"
+                    password = "Frida1195433053#"
+                }
+                generator.apply {
+                    database.apply {
+                        name = "org.jooq.meta.postgres.PostgresDatabase"
+                        inputSchema = "public" // Ensure this matches your schema name
+                    }
+                    target.apply {
+                        packageName = "com.example.jooq"
+                        directory = "src/main/generated" // Use a separate directory for generated code
+                    }
+                }
+            }
+        }
+    }
+}
