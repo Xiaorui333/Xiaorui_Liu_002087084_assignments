@@ -26,13 +26,13 @@ dependencies {
     implementation("io.github.stefanbratanov:jvm-openai:0.11.0")
 
     // PostgreSQL Driver
-    implementation("org.postgresql:postgresql:42.6.0")
+    implementation("org.postgresql:postgresql:42.7.2")
 
     // JOOQ runtime dependency for querying
     implementation("org.jooq:jooq:3.18.0")
 
     // PostgreSQL Driver for JOOQ code generation
-    jooqGenerator("org.postgresql:postgresql:42.6.0")
+    jooqGenerator("org.postgresql:postgresql:42.7.2")
 
     testing {
         suites {
@@ -50,6 +50,16 @@ dependencies {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    // Include the JOOQ-generated source directory in the main source set
+    sourceSets {
+        named("main") {
+            java {
+                srcDir("src/main/generated")
+            }
+        }
+    }
+
+
     application {
         // Define the main class for the application.
         mainClass.set("org.example.App")
@@ -62,7 +72,7 @@ jooq {
             jooqConfiguration.apply {
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
-                    url = "jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres"
+                    url = "jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres?prepareThreshold=0"
                     user = "postgres.tqbovlsrhixnvhquimtz"
                     password = "Frida1195433053#"
                 }
@@ -80,3 +90,5 @@ jooq {
         }
     }
 }
+
+
